@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Apr 20, 2020 7:05:26 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="cad_prod.Produtos" table="produtos" schema="public" optimistic-lock="version">
+        <id name="idProd" type="int">
+            <column name="id_prod" />
+            <generator class="assigned" />
+        </id>
+        <property name="codProd" type="string">
+            <column name="cod_prod" length="30" />
+        </property>
+        <property name="descProd" type="string">
+            <column name="desc_prod" length="30" />
+        </property>
+        <property name="qtdProd" type="java.lang.Integer">
+            <column name="qtd_prod" />
+        </property>
+        <property name="precoProd" type="java.lang.Double">
+            <column name="preco_prod" precision="17" scale="17" />
+        </property>
+    </class>
+</hibernate-mapping>
