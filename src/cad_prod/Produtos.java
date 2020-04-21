@@ -16,7 +16,6 @@ import javax.persistence.SequenceGenerator;
 public class Produtos implements java.io.Serializable {
 
     @SequenceGenerator(name = "pk_sequence", sequenceName = "entity_id_seq", allocationSize = 1)
-    @Column(name = "id", unique = true, nullable = false)
     private Integer id;
     private String codProd;
     private String descProd;
@@ -38,6 +37,7 @@ public class Produtos implements java.io.Serializable {
         this.precoProd = precoProd;
     }
 
+    @Column(name = "id", unique = true, nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pk_sequence")
     public int getId() {
