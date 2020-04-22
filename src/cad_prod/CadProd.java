@@ -6,9 +6,13 @@
 package cad_prod;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -47,7 +51,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         jPanel1 = new javax.swing.JPanel();
         consultaBtn = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        deleteBtn = new javax.swing.JButton();
         btnIncluir = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -59,20 +63,26 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         txtQtdprod = new javax.swing.JTextField();
         txtPrcvenprod = new javax.swing.JTextField();
         lblAlerta = new javax.swing.JLabel();
+        id = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Produtos");
 
-        consultaBtn.setText("Consulta");
+        consultaBtn.setText("Consultar");
         consultaBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 consultaBtnActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Alteração");
+        jButton2.setText("Alterar");
 
-        jButton3.setText("Excluir");
+        deleteBtn.setText("Excluir");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         btnIncluir.setText("Incluir");
         btnIncluir.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -111,7 +121,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
                         .addGap(32, 32, 32)
                         .addComponent(btnIncluir, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(38, 38, 38)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -138,7 +148,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel2, jLabel3, jLabel4, jLabel5});
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnIncluir, consultaBtn, jButton2, jButton3, jButton5});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnIncluir, consultaBtn, deleteBtn, jButton2, jButton5});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,22 +181,26 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
                     .addComponent(consultaBtn)
                     .addComponent(jButton2)
                     .addComponent(btnIncluir)
-                    .addComponent(jButton3)
+                    .addComponent(deleteBtn)
                     .addComponent(jButton5))
                 .addContainerGap())
         );
+
+        id.setText("id");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(id)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(id))
         );
 
         pack();
@@ -204,17 +218,24 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         } else {
             Session session = factory.openSession();
             Transaction tx = null;
-            Integer id_prod = null;
+            //Integer id_prod = 1;
             try {
                 tx = session.beginTransaction();
                 Produtos produto = new Produtos();
                 //anotation de auto increment não está funcionando
-                produto.setId(Integer.parseInt(txtCodprodValue));
+                //apelando para consulta as chaves do banco    
+                String sql = "SELECT MAX(id) FROM PRODUTOS";
+                SQLQuery query = session.createSQLQuery(sql);
+                query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                List<HashMap> pk = query.list();
+                Integer newPk = (Integer) pk.get(0).get("max");
+
+                produto.setId(newPk + 1);
                 produto.setCodProd(txtCodprodValue);
                 produto.setDescProd(txtDescprodValue);
                 produto.setQtdProd(Integer.parseInt(txtQtdprodValue));
                 produto.setPrecoProd(novotxtPrcvenprodValue);
-                id_prod = (Integer) session.save(produto);
+                session.save(produto);
                 tx.commit();
             } catch (HibernateException e) {
                 if (tx != null) {
@@ -236,6 +257,33 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         new ListaProdutos().setVisible(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     }//GEN-LAST:event_consultaBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        Session session = factory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Integer idProd = Integer.parseInt(id.getText());
+            System.out.println(idProd);
+
+            Produtos produto = new Produtos(idProd);
+            session.delete(produto);
+            session.flush();
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        lblAlerta.setText("Produto Excluido com Sucesso!");
+        txtCodprod.setText("");
+        txtDescprod.setText("");
+        txtPrcvenprod.setText("");
+        txtQtdprod.setText("");
+    }//GEN-LAST:event_deleteBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -287,8 +335,9 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
     private javax.persistence.EntityManager Novo_SistemaPUEntityManager;
     private javax.swing.JButton btnIncluir;
     private javax.swing.JButton consultaBtn;
+    private javax.swing.JButton deleteBtn;
+    public javax.swing.JLabel id;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -43,19 +43,29 @@ public class ListaProdutos extends javax.swing.JFrame {
 
         setTitle("Produtos");
 
+        jTable1.getTableHeader().setReorderingAllowed(false);
+
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, produtos_1List1, jTable1);
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codProd}"));
-        columnBinding.setColumnName("Codigo");
+        columnBinding.setColumnName("Cod Prod");
         columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${descProd}"));
-        columnBinding.setColumnName("Descrição");
+        columnBinding.setColumnName("Desc Prod");
         columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${precoProd}"));
-        columnBinding.setColumnName("Preço");
+        columnBinding.setColumnName("Preco Prod");
         columnBinding.setColumnClass(java.math.BigInteger.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${qtdProd}"));
-        columnBinding.setColumnName("Qtd em Estoque");
+        columnBinding.setColumnName("Qtd Prod");
         columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${id}"));
+        columnBinding.setColumnName("Id");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -64,12 +74,19 @@ public class ListaProdutos extends javax.swing.JFrame {
             }
         });
         jScrollPane2.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
+            jTable1.getColumnModel().getColumn(4).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -103,6 +120,7 @@ public class ListaProdutos extends javax.swing.JFrame {
         String descricao = model.getValueAt(index, 1).toString();
         String preco = model.getValueAt(index, 2).toString();
         String estoque = model.getValueAt(index, 3).toString();
+        String id = model.getValueAt(index, 4).toString();
         codprod.setVisible(true);
         codprod.pack();
         codprod.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -111,6 +129,7 @@ public class ListaProdutos extends javax.swing.JFrame {
         codprod.txtDescprod.setText(descricao);
         codprod.txtQtdprod.setText(estoque);
         codprod.txtPrcvenprod.setText(preco);
+        codprod.id.setText(id);
     }//GEN-LAST:event_jTable1MouseClicked
 
     /**
