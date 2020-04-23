@@ -5,8 +5,19 @@
  */
 package cad_prod;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
 
 /**
  *
@@ -14,11 +25,19 @@ import javax.swing.table.TableModel;
  */
 public class ListaProdutos extends javax.swing.JFrame {
 
+    private static SessionFactory factory;
+    private static ServiceRegistry registry;
+    private static List<Produtos> listaProdutos = new ArrayList();
+
     /**
      * Creates new form ListaProdutos
      */
     public ListaProdutos() {
         initComponents();
+        initConection();
+        getProdutos();
+        this.popularTabela(listaProdutos);
+
     }
     CadProd codprod = new CadProd();
 
@@ -30,7 +49,6 @@ public class ListaProdutos extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         Novo_SistemaPUEntityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("Novo_SistemaPU").createEntityManager();
         produtos_1Query = java.beans.Beans.isDesignTime() ? null : Novo_SistemaPUEntityManager.createQuery("SELECT p FROM Produtos_1 p");
@@ -40,59 +58,50 @@ public class ListaProdutos extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        fecharBtn = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Produtos");
 
-        jTable1.getTableHeader().setReorderingAllowed(false);
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, produtos_1List1, jTable1);
-        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codProd}"));
-        columnBinding.setColumnName("Cod Prod");
-        columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${descProd}"));
-        columnBinding.setColumnName("Desc Prod");
-        columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${precoProd}"));
-        columnBinding.setColumnName("Preco Prod");
-        columnBinding.setColumnClass(java.math.BigInteger.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${qtdProd}"));
-        columnBinding.setColumnName("Qtd Prod");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${id}"));
-        columnBinding.setColumnName("Id");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        bindingGroup.addBinding(jTableBinding);
-        jTableBinding.bind();
+            },
+            new String [] {
+
+            }
+        ));
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
             }
         });
         jScrollPane2.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-            jTable1.getColumnModel().getColumn(4).setResizable(false);
-        }
+
+        fecharBtn.setText("Fechar");
+        fecharBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fecharBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(fecharBtn))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane2)
-                .addGap(0, 0, 0))
+                .addGap(8, 8, 8)
+                .addComponent(fecharBtn)
+                .addGap(1, 1, 1)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -103,12 +112,8 @@ public class ListaProdutos extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        bindingGroup.bind();
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -130,12 +135,21 @@ public class ListaProdutos extends javax.swing.JFrame {
         codprod.txtQtdprod.setText(estoque);
         codprod.txtPrcvenprod.setText(preco);
         codprod.id.setText(id);
+        this.setVisible(false);
+
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void fecharBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fecharBtnActionPerformed
+        this.setVisible(false);
+        codprod.setVisible(true);
+    }//GEN-LAST:event_fecharBtnActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+
+        StandardServiceRegistryBuilder.destroy(registry);
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -163,12 +177,14 @@ public class ListaProdutos extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ListaProdutos().setVisible(true);
+
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.persistence.EntityManager Novo_SistemaPUEntityManager;
+    private javax.swing.JButton fecharBtn;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
@@ -176,6 +192,64 @@ public class ListaProdutos extends javax.swing.JFrame {
     private java.util.List<cad_prod.Produtos_1> produtos_1List1;
     private javax.persistence.Query produtos_1Query;
     private javax.persistence.Query produtos_1Query1;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    private void initConection() {
+        try {
+            Configuration configuration = new Configuration().configure();
+            registry = new StandardServiceRegistryBuilder().applySettings(
+                    configuration.getProperties()).build();
+            factory = configuration.buildSessionFactory(registry);
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+    }
+
+    private void getProdutos() {
+        Session session = factory.openSession();
+        try {
+            //tx = session.beginTransaction();
+            Query query = session.createQuery("from Produtos");
+            List produtos = query.list();
+            System.out.println(produtos);
+            listaProdutos = produtos;
+            for (Iterator iterator
+                    = produtos.iterator(); iterator.hasNext();) {
+                Produtos prd = (Produtos) iterator.next();
+//                System.out.print("Codigo: " + prd.getCodProd());
+//                System.out.print("  Descrição: " + prd.getDescProd());
+//                System.out.println("  Preço: " + prd.getPrecoProd());
+            }
+        } catch (HibernateException e) {
+            // if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    private void popularTabela(List<Produtos> listaProdutos) {
+        DefaultTableModel modeloTabela = new DefaultTableModel();
+        this.jTable1.setModel(modeloTabela);
+        modeloTabela.addColumn("Código");
+        modeloTabela.addColumn("Descrição");
+        modeloTabela.addColumn("Preço");
+        modeloTabela.addColumn("Quantidade");
+        modeloTabela.addColumn("Id");
+        for (Produtos produto : listaProdutos) {
+            modeloTabela.addRow(
+                    new Object[]{
+                        produto.getCodProd(),
+                        produto.getDescProd(),
+                        produto.getPrecoProd(),
+                        produto.getQtdProd(),
+                        produto.getId()
+                    });
+        }
+        jTable1.getColumn("Id").setPreferredWidth(0);
+        jTable1.getColumn("Id").setMinWidth(0);
+        jTable1.getColumn("Id").setWidth(0);
+        jTable1.getColumn("Id").setMaxWidth(0);
+    }
 }

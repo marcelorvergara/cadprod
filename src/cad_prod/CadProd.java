@@ -34,6 +34,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
      */
     public CadProd() {
         initComponents();
+        id.setVisible(false);
     }
 
     /**
@@ -50,7 +51,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         produtos_1List = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : produtos_1Query.getResultList();
         jPanel1 = new javax.swing.JPanel();
         consultaBtn = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        alterarBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         btnIncluir = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -75,7 +76,12 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
             }
         });
 
-        jButton2.setText("Alterar");
+        alterarBtn.setText("Alterar");
+        alterarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                alterarBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setText("Excluir");
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -107,53 +113,54 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
 
         txtPrcvenprod.setText("0");
 
+        lblAlerta.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblAlerta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(lblAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                            .addGap(68, 68, 68)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addGap(58, 58, 58)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtCodprod)
+                                .addComponent(txtDescprod)
+                                .addComponent(txtQtdprod)
+                                .addComponent(txtPrcvenprod, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(consultaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(alterarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
                         .addComponent(btnIncluir, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)
+                        .addGap(29, 29, 29)
                         .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(lblAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addGap(68, 68, 68)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addGap(58, 58, 58)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtCodprod)
-                                    .addComponent(txtDescprod)
-                                    .addComponent(txtQtdprod)
-                                    .addComponent(txtPrcvenprod, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)))
+                .addGap(41, 41, 41))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel2, jLabel3, jLabel4, jLabel5});
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnIncluir, consultaBtn, deleteBtn, jButton2, jButton5});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {alterarBtn, btnIncluir, consultaBtn, deleteBtn});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -174,12 +181,12 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel5)
                     .addComponent(txtPrcvenprod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(lblAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(consultaBtn)
-                    .addComponent(jButton2)
+                    .addComponent(alterarBtn)
                     .addComponent(btnIncluir)
                     .addComponent(deleteBtn)
                     .addComponent(jButton5))
@@ -208,53 +215,68 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
 
     private void btnIncluirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIncluirMouseClicked
         String txtCodprodValue = txtCodprod.getText();
-        String txtDescprodValue = txtDescprod.getText();
-        String txtPrcvenprodValue = txtPrcvenprod.getText();
-        BigDecimal novotxtPrcvenprodValue = new BigDecimal(txtPrcvenprodValue.replace(",", "."));
-        String txtQtdprodValue = txtQtdprod.getText();
-        if (txtCodprodValue.isEmpty() || txtDescprodValue.isEmpty()
-                || txtQtdprodValue.isEmpty() || novotxtPrcvenprodValue.compareTo(BigDecimal.ZERO) <= 0) {
-            lblAlerta.setText("Favor inserir os dados corretamente em todos os campos ");
-        } else {
-            Session session = factory.openSession();
-            Transaction tx = null;
-            //Integer id_prod = 1;
-            try {
-                tx = session.beginTransaction();
-                Produtos produto = new Produtos();
-                //anotation de auto increment não está funcionando
-                //apelando para consulta as chaves do banco    
-                String sql = "SELECT MAX(id) FROM PRODUTOS";
-                SQLQuery query = session.createSQLQuery(sql);
-                query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                List<HashMap> pk = query.list();
-                Integer newPk = (Integer) pk.get(0).get("max");
+        String verificaCodigo = null;
+        verificaCodigo = checaCodigo(txtCodprodValue);
+        if (verificaCodigo == null) {
+            String txtDescprodValue = txtDescprod.getText();
+            String txtPrcvenprodValue = txtPrcvenprod.getText();
+            BigDecimal novotxtPrcvenprodValue = new BigDecimal(txtPrcvenprodValue.replace(",", "."));
+            String txtQtdprodValue = txtQtdprod.getText();
+            if (txtCodprodValue.isEmpty() || txtDescprodValue.isEmpty()
+                    || txtQtdprodValue.isEmpty() || novotxtPrcvenprodValue.compareTo(BigDecimal.ZERO) <= 0) {
+                lblAlerta.setText("Favor inserir os dados corretamente em todos os campos ");
+            } else {
+                Session session = factory.openSession();
+                Transaction tx = null;
+                //Integer id_prod = 1;
+                try {
+                    tx = session.beginTransaction();
+                    Produtos produto = new Produtos();
+                    //anotation de auto increment não está funcionando
+                    //apelando para consulta as chaves do banco    
+                    String sql = "SELECT MAX(id) FROM PRODUTOS";
+                    SQLQuery query = session.createSQLQuery(sql);
+                    query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                    List<HashMap> pk = query.list();
+                    Integer newPk = (Integer) pk.get(0).get("max");
 
-                produto.setId(newPk + 1);
-                produto.setCodProd(txtCodprodValue);
-                produto.setDescProd(txtDescprodValue);
-                produto.setQtdProd(Integer.parseInt(txtQtdprodValue));
-                produto.setPrecoProd(novotxtPrcvenprodValue);
-                session.save(produto);
-                tx.commit();
-            } catch (HibernateException e) {
-                if (tx != null) {
-                    tx.rollback();
+                    produto.setId(newPk + 1);
+                    produto.setCodProd(txtCodprodValue);
+                    produto.setDescProd(txtDescprodValue);
+                    produto.setQtdProd(Integer.parseInt(txtQtdprodValue));
+                    produto.setPrecoProd(novotxtPrcvenprodValue);
+                    session.save(produto);
+                    tx.commit();
+
+                } catch (HibernateException e) {
+                    if (tx != null) {
+                        tx.rollback();
+                    }
+                    e.printStackTrace();
+                } finally {
+                    session.close();
                 }
-                e.printStackTrace();
-            } finally {
-                session.close();
+                lblAlerta.setText("Produto Incluido com Sucesso!");
+                txtCodprod.setText("");
+                txtDescprod.setText("");
+                txtPrcvenprod.setText("");
+                txtQtdprod.setText("");
             }
-            lblAlerta.setText("Produto Incluido com Sucesso!");
-            txtCodprod.setText("");
-            txtDescprod.setText("");
-            txtPrcvenprod.setText("");
-            txtQtdprod.setText("");
+        } else {
+            lblAlerta.setText("Codigo de produto já cadastrado!");
         }
     }//GEN-LAST:event_btnIncluirMouseClicked
 
     private void consultaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultaBtnActionPerformed
-        new ListaProdutos().setVisible(true);
+        ListaProdutos lProd = new ListaProdutos();
+        lProd.setResizable(false);
+        //lProd.setSize(100, 100);
+        //lProd.setUndecorated(true);
+        //lProd.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+        lProd.setVisible(true);
+        //new ListaProdutos().setVisible(true);
+        this.setVisible(false);
+        this.dispose();
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     }//GEN-LAST:event_consultaBtnActionPerformed
 
@@ -270,6 +292,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
             session.delete(produto);
             session.flush();
             tx.commit();
+
         } catch (HibernateException e) {
             if (tx != null) {
                 tx.rollback();
@@ -284,6 +307,49 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         txtPrcvenprod.setText("");
         txtQtdprod.setText("");
     }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void alterarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alterarBtnActionPerformed
+        String idProd = id.getText();
+        String txtCodprodValue = txtCodprod.getText();
+        String txtDescprodValue = txtDescprod.getText();
+        String txtPrcvenprodValue = txtPrcvenprod.getText();
+        BigDecimal novotxtPrcvenprodValue = new BigDecimal(txtPrcvenprodValue.replace(",", "."));
+        String txtQtdprodValue = txtQtdprod.getText();
+        if (id.getText() == "id" || txtCodprodValue.isEmpty() || txtDescprodValue.isEmpty()
+                || txtQtdprodValue.isEmpty() || novotxtPrcvenprodValue.compareTo(BigDecimal.ZERO) <= 0) {
+            lblAlerta.setText("É necessário escolher um produto em \"CONSULTA\"");
+        } else {
+            Produtos produto = new Produtos();
+            produto.setCodProd(txtCodprodValue);
+            produto.setDescProd(txtDescprodValue);
+            produto.setQtdProd(Integer.parseInt(txtQtdprodValue));
+            produto.setPrecoProd(novotxtPrcvenprodValue);
+            produto.setId(Integer.parseInt(idProd));
+            Session session = factory.openSession();
+            Transaction tx = null;
+            try {
+                tx = session.beginTransaction();
+                System.out.println(idProd);
+                session.update(produto);
+                session.flush();
+                tx.commit();
+
+            } catch (HibernateException e) {
+                if (tx != null) {
+                    tx.rollback();
+                }
+                e.printStackTrace();
+            } finally {
+                session.close();
+            }
+            lblAlerta.setText("Produto Alterado com Sucesso!");
+            txtCodprod.setText("");
+            txtDescprod.setText("");
+            txtPrcvenprod.setText("");
+            txtQtdprod.setText("");
+        }
+
+    }//GEN-LAST:event_alterarBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -333,11 +399,11 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.persistence.EntityManager Novo_SistemaPUEntityManager;
+    private javax.swing.JButton alterarBtn;
     private javax.swing.JButton btnIncluir;
     private javax.swing.JButton consultaBtn;
     private javax.swing.JButton deleteBtn;
     public javax.swing.JLabel id;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -356,5 +422,25 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
     @Override
     public void valueChanged(ListSelectionEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private String checaCodigo(String txtCodprodValue) {
+        Session session = factory.openSession();
+        String resultado = null;
+        String sql = "SELECT cod_prod FROM PRODUTOS WHERE cod_prod = :txtCodprodValue";
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setString("txtCodprodValue", txtCodprodValue);
+        query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+        List<HashMap> pk = query.list();
+        if (pk.isEmpty()) {
+            resultado = null;
+        } else {
+            resultado = pk.get(0).get("cod_prod").toString();
+        }
+        session.close();
+        if (resultado != null) {
+            return resultado;
+        }
+        return null;
     }
 }
