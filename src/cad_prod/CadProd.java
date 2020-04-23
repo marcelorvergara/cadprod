@@ -35,7 +35,7 @@ import org.hibernate.service.ServiceRegistry;
  * @author Marcelo
  */
 public class CadProd extends javax.swing.JFrame implements ListSelectionListener {
-
+    
     private static SessionFactory factory;
     private static ServiceRegistry registry;
 
@@ -286,7 +286,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
                     query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
                     List<HashMap> pk = query.list();
                     Integer newPk = (Integer) pk.get(0).get("max");
-
+                    
                     produto.setId(newPk + 1);
                     produto.setCodProd(txtCodprodValue);
                     produto.setDescProd(txtDescprodValue);
@@ -294,7 +294,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
                     produto.setPrecoProd(novotxtPrcvenprodValue);
                     session.save(produto);
                     tx.commit();
-
+                    
                 } catch (HibernateException e) {
                     if (tx != null) {
                         tx.rollback();
@@ -313,7 +313,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
             lblAlerta.setText("Codigo de produto já cadastrado!");
         }
     }//GEN-LAST:event_btnIncluirMouseClicked
-
+    
     private void consultaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultaBtnActionPerformed
         ListaProdutos lProd = new ListaProdutos();
         lProd.setResizable(false);
@@ -326,7 +326,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         this.dispose();
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     }//GEN-LAST:event_consultaBtnActionPerformed
-
+    
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         String txtCodprodValue = txtCodprod.getText();
         String txtDescprodValue = txtDescprod.getText();
@@ -343,12 +343,12 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
                 tx = session.beginTransaction();
                 Integer idProd = Integer.parseInt(id.getText());
                 System.out.println(idProd);
-
+                
                 Produtos produto = new Produtos(idProd);
                 session.delete(produto);
                 session.flush();
                 tx.commit();
-
+                
             } catch (HibernateException e) {
                 if (tx != null) {
                     tx.rollback();
@@ -364,7 +364,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
             txtQtdprod.setText("");
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
-
+    
     private void alterarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alterarBtnActionPerformed
         String txtCodprodValue = txtCodprod.getText();
         String txtDescprodValue = txtDescprod.getText();
@@ -386,7 +386,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
             relatorioBtn.setVisible(false);
         }
     }//GEN-LAST:event_alterarBtnActionPerformed
-
+    
     private void confAlteracaoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confAlteracaoBtnActionPerformed
         String idProd = id.getText();
         String txtCodprodValue = txtCodprod.getText();
@@ -412,7 +412,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
                 session.update(produto);
                 session.flush();
                 tx.commit();
-
+                
             } catch (HibernateException e) {
                 if (tx != null) {
                     tx.rollback();
@@ -437,7 +437,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
             relatorioBtn.setVisible(true);
         }
     }//GEN-LAST:event_confAlteracaoBtnActionPerformed
-
+    
     private void altCancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_altCancelBtnActionPerformed
         confAlteracaoBtn.setVisible(false);
         altCancelBtn.setVisible(false);
@@ -449,18 +449,17 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         deleteBtn.setVisible(true);
         relatorioBtn.setVisible(true);
     }//GEN-LAST:event_altCancelBtnActionPerformed
-
+    
     private void relatorioBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorioBtnActionPerformed
         Connection conn;
-
         String src = "src/cad_prod/report1.jasper";
-
         try {
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Novo_Sistema", "postgres", "M1rela..");
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Novo_Sistema", "postgres", "postgres");
             JasperPrint jasperPrint = null;
             jasperPrint = JasperFillManager.fillReport(src, null, conn);
-            JasperViewer.viewReport(jasperPrint);
+            JasperViewer viewReport = new JasperViewer(jasperPrint, false);
+            viewReport.setVisible(true);
             conn.close();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(CadProd.class.getName()).log(Level.SEVERE, null, ex);
@@ -469,7 +468,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         } catch (JRException ex) {
             Logger.getLogger(CadProd.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }//GEN-LAST:event_relatorioBtnActionPerformed
 
     /**
@@ -546,7 +545,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
     public void valueChanged(ListSelectionEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     private String checaCodigo(String txtCodprodValue) {
         Session session = factory.openSession();
         String resultado = null;

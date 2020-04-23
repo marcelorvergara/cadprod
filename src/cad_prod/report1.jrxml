@@ -19,7 +19,7 @@
 					<textElement>
 						<font size="12"/>
 					</textElement>
-					<text><![CDATA[cod_prod]]></text>
+					<text><![CDATA[Código ]]></text>
 				</staticText>
 				<textField>
 					<reportElement mode="Opaque" x="100" y="0" width="455" height="32" forecolor="#006699" backcolor="#E6E6E6" uuid="3724731a-8ec9-4c67-85d7-aca2fa750b62"/>
@@ -53,7 +53,7 @@
 					<textElement>
 						<font size="12"/>
 					</textElement>
-					<text><![CDATA[desc_prod]]></text>
+					<text><![CDATA[Descrição]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -77,7 +77,7 @@
 					<textElement>
 						<font size="12"/>
 					</textElement>
-					<text><![CDATA[qtd_prod]]></text>
+					<text><![CDATA[Quantidade Estoque]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -101,7 +101,7 @@
 					<textElement>
 						<font size="12"/>
 					</textElement>
-					<text><![CDATA[preco_prod]]></text>
+					<text><![CDATA[Preço]]></text>
 				</staticText>
 			</band>
 		</groupHeader>

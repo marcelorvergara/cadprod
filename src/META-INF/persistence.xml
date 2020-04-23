@@ -7,11 +7,11 @@
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/Novo_Sistema"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <property name="javax.persistence.jdbc.password" value="M1rela.."/>
+      <property name="javax.persistence.jdbc.password" value="postgres"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="postgresPU" transaction-type="RESOURCE_LOCAL">
-    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>	
     <class>cad_prod.Produtos_1</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value=""/>
