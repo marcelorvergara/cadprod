@@ -5,11 +5,21 @@
  */
 package cad_prod;
 
+import java.awt.Color;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
@@ -34,7 +44,9 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
      */
     public CadProd() {
         initComponents();
-        id.setVisible(false);
+        id.setVisible(true);
+        confAlteracaoBtn.setVisible(false);
+        altCancelBtn.setVisible(false);
     }
 
     /**
@@ -54,7 +66,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         alterarBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         btnIncluir = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        relatorioBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -64,6 +76,8 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         txtQtdprod = new javax.swing.JTextField();
         txtPrcvenprod = new javax.swing.JTextField();
         lblAlerta = new javax.swing.JLabel();
+        confAlteracaoBtn = new javax.swing.JButton();
+        altCancelBtn = new javax.swing.JButton();
         id = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -97,7 +111,12 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
             }
         });
 
-        jButton5.setText("Relatórios");
+        relatorioBtn.setText("Relatórios");
+        relatorioBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                relatorioBtnActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel2.setText("Código do Produto:");
@@ -116,46 +135,66 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
         lblAlerta.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         lblAlerta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        confAlteracaoBtn.setText("Confirmar");
+        confAlteracaoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confAlteracaoBtnActionPerformed(evt);
+            }
+        });
+
+        altCancelBtn.setText("Cancelar");
+        altCancelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                altCancelBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(lblAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addGap(68, 68, 68)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addGap(58, 58, 58)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtCodprod)
-                                .addComponent(txtDescprod)
-                                .addComponent(txtQtdprod)
-                                .addComponent(txtPrcvenprod, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))))
+                .addContainerGap()
+                .addComponent(consultaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(alterarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(btnIncluir, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(relatorioBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                .addGap(41, 41, 41))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(consultaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(alterarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
-                        .addComponent(btnIncluir, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
-                        .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)))
-                .addGap(41, 41, 41))
+                        .addComponent(lblAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(68, 68, 68)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(58, 58, 58)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtCodprod)
+                            .addComponent(txtDescprod)
+                            .addComponent(txtQtdprod)
+                            .addComponent(txtPrcvenprod, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(confAlteracaoBtn)
+                    .addComponent(altCancelBtn))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel2, jLabel3, jLabel4, jLabel5});
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {alterarBtn, btnIncluir, consultaBtn, deleteBtn});
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {altCancelBtn, confAlteracaoBtn});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,20 +216,28 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
                                 .addGap(36, 36, 36)
                                 .addComponent(jLabel4))
                             .addComponent(txtQtdprod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(31, 31, 31)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel5)
-                    .addComponent(txtPrcvenprod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addComponent(lblAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(consultaBtn)
-                    .addComponent(alterarBtn)
-                    .addComponent(btnIncluir)
-                    .addComponent(deleteBtn)
-                    .addComponent(jButton5))
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtPrcvenprod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(confAlteracaoBtn)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addComponent(lblAlerta, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(consultaBtn)
+                            .addComponent(alterarBtn)
+                            .addComponent(btnIncluir)
+                            .addComponent(deleteBtn)
+                            .addComponent(relatorioBtn))
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(altCancelBtn)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         id.setText("id");
@@ -281,34 +328,66 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
     }//GEN-LAST:event_consultaBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        Session session = factory.openSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            Integer idProd = Integer.parseInt(id.getText());
-            System.out.println(idProd);
+        String txtCodprodValue = txtCodprod.getText();
+        String txtDescprodValue = txtDescprod.getText();
+        String txtPrcvenprodValue = txtPrcvenprod.getText();
+        String txtQtdprodValue = txtQtdprod.getText();
+        String idText = id.getText();
+        if (idText.isEmpty() || txtCodprodValue.isEmpty() || txtDescprodValue.isEmpty()
+                || txtQtdprodValue.isEmpty() || txtPrcvenprodValue.isEmpty()) {
+            lblAlerta.setText("É necessário escolher um produto em \"CONSULTA\"");
+        } else {
+            Session session = factory.openSession();
+            Transaction tx = null;
+            try {
+                tx = session.beginTransaction();
+                Integer idProd = Integer.parseInt(id.getText());
+                System.out.println(idProd);
 
-            Produtos produto = new Produtos(idProd);
-            session.delete(produto);
-            session.flush();
-            tx.commit();
+                Produtos produto = new Produtos(idProd);
+                session.delete(produto);
+                session.flush();
+                tx.commit();
 
-        } catch (HibernateException e) {
-            if (tx != null) {
-                tx.rollback();
+            } catch (HibernateException e) {
+                if (tx != null) {
+                    tx.rollback();
+                }
+                e.printStackTrace();
+            } finally {
+                session.close();
             }
-            e.printStackTrace();
-        } finally {
-            session.close();
+            lblAlerta.setText("Produto Excluido com Sucesso!");
+            txtCodprod.setText("");
+            txtDescprod.setText("");
+            txtPrcvenprod.setText("");
+            txtQtdprod.setText("");
         }
-        lblAlerta.setText("Produto Excluido com Sucesso!");
-        txtCodprod.setText("");
-        txtDescprod.setText("");
-        txtPrcvenprod.setText("");
-        txtQtdprod.setText("");
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void alterarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alterarBtnActionPerformed
+        String txtCodprodValue = txtCodprod.getText();
+        String txtDescprodValue = txtDescprod.getText();
+        String txtPrcvenprodValue = txtPrcvenprod.getText();
+        String txtQtdprodValue = txtQtdprod.getText();
+        String idText = id.getText();
+        if (idText.isEmpty() || txtCodprodValue.isEmpty() || txtDescprodValue.isEmpty()
+                || txtQtdprodValue.isEmpty() || txtPrcvenprodValue.isEmpty()) {
+            lblAlerta.setText("É necessário escolher um produto em \"CONSULTA\"");
+        } else {
+            confAlteracaoBtn.setVisible(true);
+            altCancelBtn.setVisible(true);
+            txtCodprod.setEditable(false);
+            txtCodprod.setBackground(Color.LIGHT_GRAY);
+            consultaBtn.setVisible(false);
+            alterarBtn.setVisible(false);
+            btnIncluir.setVisible(false);
+            deleteBtn.setVisible(false);
+            relatorioBtn.setVisible(false);
+        }
+    }//GEN-LAST:event_alterarBtnActionPerformed
+
+    private void confAlteracaoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confAlteracaoBtnActionPerformed
         String idProd = id.getText();
         String txtCodprodValue = txtCodprod.getText();
         String txtDescprodValue = txtDescprod.getText();
@@ -347,9 +426,51 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
             txtDescprod.setText("");
             txtPrcvenprod.setText("");
             txtQtdprod.setText("");
+            confAlteracaoBtn.setVisible(false);
+            altCancelBtn.setVisible(false);
+            txtCodprod.setEditable(true);
+            txtCodprod.setBackground(Color.WHITE);
+            consultaBtn.setVisible(true);
+            alterarBtn.setVisible(true);
+            btnIncluir.setVisible(true);
+            deleteBtn.setVisible(true);
+            relatorioBtn.setVisible(true);
+        }
+    }//GEN-LAST:event_confAlteracaoBtnActionPerformed
+
+    private void altCancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_altCancelBtnActionPerformed
+        confAlteracaoBtn.setVisible(false);
+        altCancelBtn.setVisible(false);
+        txtCodprod.setEditable(true);
+        txtCodprod.setBackground(Color.WHITE);
+        consultaBtn.setVisible(true);
+        alterarBtn.setVisible(true);
+        btnIncluir.setVisible(true);
+        deleteBtn.setVisible(true);
+        relatorioBtn.setVisible(true);
+    }//GEN-LAST:event_altCancelBtnActionPerformed
+
+    private void relatorioBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorioBtnActionPerformed
+        Connection conn;
+
+        String src = "src/cad_prod/report1.jasper";
+
+        try {
+            Class.forName("org.postgresql.Driver");
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Novo_Sistema", "postgres", "M1rela..");
+            JasperPrint jasperPrint = null;
+            jasperPrint = JasperFillManager.fillReport(src, null, conn);
+            JasperViewer.viewReport(jasperPrint);
+            conn.close();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(CadProd.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(CadProd.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JRException ex) {
+            Logger.getLogger(CadProd.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }//GEN-LAST:event_alterarBtnActionPerformed
+    }//GEN-LAST:event_relatorioBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -399,12 +520,13 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.persistence.EntityManager Novo_SistemaPUEntityManager;
+    private javax.swing.JButton altCancelBtn;
     private javax.swing.JButton alterarBtn;
     private javax.swing.JButton btnIncluir;
+    private javax.swing.JButton confAlteracaoBtn;
     private javax.swing.JButton consultaBtn;
     private javax.swing.JButton deleteBtn;
     public javax.swing.JLabel id;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -413,6 +535,7 @@ public class CadProd extends javax.swing.JFrame implements ListSelectionListener
     private javax.swing.JLabel lblAlerta;
     private java.util.List<cad_prod.Produtos_1> produtos_1List;
     private javax.persistence.Query produtos_1Query;
+    private javax.swing.JButton relatorioBtn;
     public javax.swing.JTextField txtCodprod;
     public javax.swing.JTextField txtDescprod;
     public javax.swing.JTextField txtPrcvenprod;
